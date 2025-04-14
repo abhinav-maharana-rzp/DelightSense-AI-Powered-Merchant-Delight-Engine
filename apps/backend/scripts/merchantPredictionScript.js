@@ -4,9 +4,23 @@ import axios from 'axios';
 
 export const processMerchantData = async () => {
     try {
+
+        // List of possible descriptions for ticket creation
+        const descriptions = [
+            "Low delight score detected",
+            "High API failure rate observed",
+            "Frequent transaction failures reported",
+            "Customer dissatisfaction reported",
+            "Settlement delays exceeding threshold"
+        ];
+
+        // Randomly select a description
+        const randomDescription = descriptions[Math.floor(Math.random() * descriptions.length)];
+
+
         // Fetch all merchants from the merchantData collection
         const merchants = await MerchantData.find();
-        console.log("Merchant List", merchants);
+        // console.log("Merchant List", merchants);
 
         for (const merchant of merchants) {
             console.log(`Processing merchant_id: ${merchant.merchant_id}`);
@@ -45,13 +59,17 @@ export const processMerchantData = async () => {
                     // If the delight_score is below 0.4, call the createTicket route
                     if (delight_score < 0.4) {
                         try {
-                            const ticketResponse = await axios.post('http://localhost:5000/tickets', {
+                            const ticketResponse = await axios.post('http://localhost:3001/api/tickets/create', {
                                 merchant_id,
-                                description: `Low delight score detected: ${delight_score}`,
+                                description: `${randomDescription}`,
                             });
                             console.log(`Ticket created for merchant_id: ${merchant_id}`, ticketResponse.data);
                         } catch (ticketError) {
-                            console.error(`Error creating ticket for merchant_id: ${merchant_id}`, ticketError.message);
+                            if (ticketError.response && ticketError.response.data && ticketError.response.data.message) {
+                                console.error(`Ticket creation failed for merchant_id: ${merchant_id} - ${ticketError.response.data.message}`);
+                            } else {
+                                console.error(`Error creating ticket for merchant_id: ${merchant_id}`, ticketError.message);
+                            }
                         }
                     }
                 } else {
@@ -67,5 +85,3 @@ export const processMerchantData = async () => {
         console.error('Error fetching merchant data:', err.message);
     }
 };
-
-processMerchantData();

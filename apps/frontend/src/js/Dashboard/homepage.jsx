@@ -10,6 +10,7 @@ const Dashboard = () => {
     const [showDropdown, setShowDropdown] = useState(false);
     const [predictionData, setPredictionData] = useState(null);
     const [merchantData, setMerchantData] = useState(null);
+    const [tickets, setTickets] = useState([]);
     const [loading, setLoading] = useState(true);
 
     const location = useLocation();
@@ -26,13 +27,15 @@ const Dashboard = () => {
     useEffect(() => {
         const fetchData = async () => {
             try {
-                const [predictionResponse, merchantResponse] = await Promise.all([
+                const [predictionResponse, merchantResponse, ticketsResponse] = await Promise.all([
                     axios.get(`http://localhost:3001/api/predict/${merchantId}`), // Predict API
-                    axios.get(`http://localhost:3001/api/merchant/get/${merchantId}`) // Merchant API
+                    axios.get(`http://localhost:3001/api/merchant/get/${merchantId}`),
+                    axios.get(`http://localhost:3001/api/tickets/get/${merchantId}`)// Merchant API
                 ]);
 
                 setPredictionData(predictionResponse.data);
                 setMerchantData(merchantResponse.data);
+                setTickets(ticketsResponse.data.tickets || []);
             } catch (error) {
                 console.error("Error fetching data:", error);
             } finally {
@@ -47,10 +50,21 @@ const Dashboard = () => {
     const getEmojiForDelightScore = (score) => {
         if (score < 0.4) {
             return "😡"; // Super angry emoji
-        } else if (score >= 0.4 && score < 0.8) {
+        } else if (score >= 0.4 && score < 0.7) {
             return "☹️"; // Frowning emoji
-        } else if (score >= 0.8 && score <= 1) {
+        } else if (score >= 0.7 && score <= 1) {
             return "😊"; // Happy emoji
+        }
+        return ""; // Default case
+    };
+
+    const getMessageForDelightScore = (score) => {
+        if (score < 0.4) {
+            return "We are sorry that you don't seem happy, but rest assured our team is working on it.";
+        } else if (score >= 0.4 && score < 0.7) {
+            return "We are committed to improving your experience and getting you to the happy emoji!";
+        } else if (score >= 0.7 && score <= 1) {
+            return "Keep smiling! We're glad to see you're happy with our service.";
         }
         return ""; // Default case
     };
@@ -82,6 +96,7 @@ const Dashboard = () => {
                 initial="hidden"
                 animate="visible"
             >
+                <div className="data-grid">
                 {/* Prediction Data Card */}
                 <motion.div
                     className="card"
@@ -96,7 +111,9 @@ const Dashboard = () => {
                             {getEmojiForDelightScore(predictionData?.delight_score)}
                         </div>
                         <p>Delight Score: {predictionData?.delight_score}</p>
-
+                        <p className="delight-message">
+                            <strong>{getMessageForDelightScore(predictionData?.delight_score)}</strong>
+                        </p>
                     </div>
 
                 </motion.div>
@@ -135,6 +152,46 @@ const Dashboard = () => {
                             <strong>Active Days (Last Month):</strong> <span>{merchantData?.active_days_last_month}</span>
                         </div>
                     </div>
+                </motion.div>
+                </div>
+                {/* Tickets Table */}
+                <motion.div
+                    className="card"
+                    initial={{ opacity: 0, y: 30 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ type: "spring", stiffness: 100, damping: 15 }}
+                >
+                    <h2>Tickets</h2>
+                    <table className="tickets-table">
+                        <thead>
+                        <tr>
+                            <th>Sr No.</th>
+                            <th>Ticket ID</th>
+                            <th>Description</th>
+                            <th>Status</th>
+                            <th>Created At</th>
+                            <th>Assigned To</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {tickets.length > 0 ? (
+                            tickets.map((ticket, index) => (
+                                <tr key={ticket._id}>
+                                    <td>{index + 1}</td>
+                                    <td>{ticket._id}</td>
+                                    <td>{ticket.description}</td>
+                                    <td>{ticket.status}</td>
+                                    <td>{new Date(ticket.created_at).toLocaleString()}</td>
+                                    <td>{ticket.assigned_to}</td>
+                                </tr>
+                            ))
+                        ) : (
+                            <tr>
+                                <td colSpan="5">No tickets found.</td>
+                            </tr>
+                        )}
+                        </tbody>
+                    </table>
                 </motion.div>
             </motion.div>
         </div>

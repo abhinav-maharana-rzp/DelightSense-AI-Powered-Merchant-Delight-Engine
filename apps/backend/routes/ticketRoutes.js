@@ -1,5 +1,5 @@
 import express from 'express';
-import { createTicket } from '../controllers/ticketController.js';
+import {createTicket, getTicketsByMerchantId} from '../controllers/ticketController.js';
 
 const router = express.Router();
 
@@ -41,5 +41,6 @@ const router = express.Router();
  *         description: Server error
  */
 router.post('/create', createTicket);
+router.get('/get/:merchant_id',getTicketsByMerchantId);
 
 export default router;
