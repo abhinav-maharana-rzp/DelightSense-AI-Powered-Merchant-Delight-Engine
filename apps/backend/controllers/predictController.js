@@ -51,3 +51,20 @@ export const predictDelight = async (req, res) => {
     res.status(500).json({ message: 'Prediction failed.', error: err.message });
   }
 };
+
+export const getPredictionByMerchantId = async (req, res) => {
+  const { merchant_id } = req.params;
+
+  try {
+    const prediction = await Prediction.findOne({ merchant_id });
+
+    if (!prediction) {
+      return res.status(404).json({ message: 'Prediction not found.' });
+    }
+
+    res.json(prediction);
+  } catch (err) {
+    console.error('Error fetching prediction:', err.message);
+    res.status(500).json({ message: 'Server error.', error: err.message });
+  }
+};

@@ -26,4 +26,6 @@ export const getRecentTriggers = async (req, res) => {
   } catch (err) {
     res.status(500).json({ error: "Error checking recent trigger" });
   }
+
+
 };

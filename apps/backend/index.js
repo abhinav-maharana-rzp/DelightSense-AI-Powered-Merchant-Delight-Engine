@@ -10,6 +10,8 @@ import nlpRoutes from './routes/nlpRoutes.js';
 // Swagger Setup
 import swaggerUi from 'swagger-ui-express';
 import swaggerJsDoc from 'swagger-jsdoc';
+import merchantPredictionRoutes from "./routes/merchantRoutes.js";
+import ticketRoutes from "./routes/ticketRoutes.js";
 
 const app = express();
 
@@ -21,6 +23,8 @@ app.use(express.json());
 app.use('/api/auth', authRoutes);
 app.use('/api/predict', predictRoutes);
 app.use('/api/trigger', triggerRoutes);
+app.use('/api/merchant',merchantPredictionRoutes);
+app.use('/api/tickets',ticketRoutes);
 app.use('/api/nlp', nlpRoutes);
 
 // ====== SWAGGER CONFIG ======
