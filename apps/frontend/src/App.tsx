@@ -17,6 +17,8 @@ import FormElements from "./pages/Forms/FormElements";
 import Blank from "./pages/Blank";
 import AppLayout from "./layout/AppLayout";
 import { ScrollToTop } from "./components/common/ScrollToTop";
+import ProtectedRoute from "./components/common/ProtectedRoute";
+
 import Home from "./pages/Dashboard/Home";
 
 export default function App() {
@@ -27,7 +29,10 @@ export default function App() {
         <Routes>
           {/* Dashboard Layout */}
           <Route element={<AppLayout />}>
-            <Route index path="/" element={<Home />} />
+            <Route index path="/" element={
+              // <ProtectedRoute>
+                <Home />
+            } />
 
             {/* Others Page */}
             <Route path="/profile" element={<UserProfiles />} />

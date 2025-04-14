@@ -6,8 +6,42 @@ import Input from "../form/input/InputField";
 import Checkbox from "../form/input/Checkbox";
 
 export default function SignUpForm() {
+  const [form, setForm] = useState({
+    fname: "",
+    lname: "",
+    email: "",
+    password: "",
+  });
   const [showPassword, setShowPassword] = useState(false);
   const [isChecked, setIsChecked] = useState(false);
+  const [error, setError] = useState("");
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setForm({ ...form, [e.target.name]: e.target.value });
+  };
+
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+
+    // Simple validation
+    if (!form.fname || !form.lname || !form.email || !form.password) {
+      setError("Please fill in all fields.");
+      return;
+    }
+
+    if (!isChecked) {
+      setError("You must agree to the Terms and Privacy Policy.");
+      return;
+    }
+
+    setError("");
+
+    // Proceed with signup logic (e.g., API call)
+    console.log("Form Submitted", form);
+    // Example:
+    // await fetch('/api/signup', { method: 'POST', body: JSON.stringify(form) })
+  };
+
   return (
     <div className="flex flex-col flex-1 w-full overflow-y-auto lg:w-1/2 no-scrollbar">
       <div className="w-full max-w-md mx-auto mb-5 sm:pt-10">
@@ -95,6 +129,8 @@ export default function SignUpForm() {
                       id="fname"
                       name="fname"
                       placeholder="Enter your first name"
+                      value={form.fname}
+                      onChange={handleChange}
                     />
                   </div>
                   {/* <!-- Last Name --> */}
@@ -107,6 +143,8 @@ export default function SignUpForm() {
                       id="lname"
                       name="lname"
                       placeholder="Enter your last name"
+                      value={form.lname}
+                      onChange={handleChange}
                     />
                   </div>
                 </div>
@@ -120,6 +158,8 @@ export default function SignUpForm() {
                     id="email"
                     name="email"
                     placeholder="Enter your email"
+                    value={form.email}
+                    onChange={handleChange}
                   />
                 </div>
                 {/* <!-- Password --> */}
@@ -130,7 +170,10 @@ export default function SignUpForm() {
                   <div className="relative">
                     <Input
                       placeholder="Enter your password"
+                      name="password"
                       type={showPassword ? "text" : "password"}
+                      value={form.password}
+                      onChange={handleChange}
                     />
                     <span
                       onClick={() => setShowPassword(!showPassword)}
@@ -163,8 +206,12 @@ export default function SignUpForm() {
                   </p>
                 </div>
                 {/* <!-- Button --> */}
+
+                {error && (
+                  <p className="text-sm text-error-500 font-medium">{error}</p>
+                )}
                 <div>
-                  <button className="flex items-center justify-center w-full px-4 py-3 text-sm font-medium text-white transition rounded-lg bg-brand-500 shadow-theme-xs hover:bg-brand-600">
+                  <button className="flex items-center justify-center w-full px-4 py-3 text-sm font-medium text-white transition rounded-lg bg-brand-500 shadow-theme-xs hover:bg-brand-600" disabled={!isChecked}>
                     Sign Up
                   </button>
                 </div>

@@ -9,6 +9,42 @@ import Button from "../ui/button/Button";
 export default function SignInForm() {
   const [showPassword, setShowPassword] = useState(false);
   const [isChecked, setIsChecked] = useState(false);
+  const [formData, setFormData] = useState({ email: "", password: "" });
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+    setFormData((prev) => ({ ...prev, [name]: value }));
+  };
+
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    try {
+      const response = await fetch("http://localhost:5000/api/auth/login", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          username: formData.email,
+          password: formData.password,
+        }),
+      });
+  
+      const data = await response.json();
+      if (!response.ok) throw new Error(data.message);
+      
+      // Save token
+      localStorage.setItem("token", data.token);
+      alert("Logged in!");
+    } catch (err) {
+      if (err instanceof Error) {
+        alert(err.message);
+      } else {
+        alert("An unknown error occurred.");
+      }
+    }
+  };
+
   return (
     <div className="flex flex-col flex-1">
       <div className="w-full max-w-md pt-10 mx-auto">
@@ -83,13 +119,13 @@ export default function SignInForm() {
                 </span>
               </div>
             </div> */}
-            <form>
+            <form onSubmit={handleSubmit}>
               <div className="space-y-6">
                 <div>
                   <Label>
                     Email <span className="text-error-500">*</span>{" "}
                   </Label>
-                  <Input placeholder="info@gmail.com" />
+                  <Input name="email" value={formData.email} onChange={handleChange} placeholder="info@gmail.com" />
                 </div>
                 <div>
                   <Label>
@@ -99,6 +135,8 @@ export default function SignInForm() {
                     <Input
                       type={showPassword ? "text" : "password"}
                       placeholder="Enter your password"
+                      value={formData.password}
+                      onChange={handleChange}
                     />
                     <span
                       onClick={() => setShowPassword(!showPassword)}
