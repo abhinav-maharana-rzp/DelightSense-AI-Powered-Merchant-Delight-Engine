@@ -33,7 +33,7 @@ export default function LoginPage() {
             if (response.ok) {
                 const data = await response.json();
                 console.log("Login successful:", data);
-                navigate("/home", { state: { merchantId: username } }); // Redirect to home page
+                navigate("/", { state: { merchantId: username } }); // Redirect to home page
             } else {
                 const errorData = await response.json();
                 setError(errorData.message || "Login failed. Please try again.");
