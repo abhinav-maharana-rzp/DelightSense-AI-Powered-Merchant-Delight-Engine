@@ -1,0 +1,56 @@
+# Node.js
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.env
+.env.*.local
+*.local
+
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+*.pkl
+*.joblib
+*.log
+
+# Virtual Environments
+.venv/
+venv/
+env/
+
+# Model files
+ml-service/model/
+nlp-service/model/
+
+# IDEs & OS
+.vscode/
+.DS_Store
+.idea/
+
+# Docker
+*.pid
+*.seed
+docker-compose.override.yml
+
+# Logs
+logs/
+*.log
+
+# Misc
+*.swp
+*.swo
+*.bak
+
+# Coverage / Testing
+coverage/
+*.cover
+*.pyc
+*.pyo
+*.pyd
+.pytest_cache/
+.cache/
+junit.xml
+htmlcov/
