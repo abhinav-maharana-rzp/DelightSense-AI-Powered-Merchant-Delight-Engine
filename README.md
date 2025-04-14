@@ -110,5 +110,5 @@ Expected fields: merchant_id, behavioral features..., delight_score
  Admin view with analytics
 
 ### 👨‍💻 Author
-Made with ❤️ by Abhinav Maharana
+Made with ❤️ by Team Wasuli.ai
 for Razorpay's 🤖 Hack:(0)n — AI Edition
