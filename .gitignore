@@ -22,7 +22,7 @@ venv/
 env/
 
 # Model files
-ml-service/model/
+# ml-service/model/
 nlp-service/model/
 
 # IDEs & OS
