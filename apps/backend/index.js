@@ -5,6 +5,7 @@ import './db.js'; // MongoDB connection
 import authRoutes from './routes/authRoutes.js';
 import predictRoutes from './routes/predictRoutes.js';
 import triggerRoutes from './routes/triggerRoutes.js';
+import nlpRoutes from './routes/nlpRoutes.js';
 
 // Swagger Setup
 import swaggerUi from 'swagger-ui-express';
@@ -20,6 +21,7 @@ app.use(express.json());
 app.use('/api/auth', authRoutes);
 app.use('/api/predict', predictRoutes);
 app.use('/api/trigger', triggerRoutes);
+app.use('/api/nlp', nlpRoutes);
 
 // ====== SWAGGER CONFIG ======
 const swaggerOptions = {
