@@ -1,5 +1,6 @@
 import express from 'express';
 import cors from 'cors';
+import nlpRoutes from './routes/nlpRoutes.js';
 // import './cron/cron.js';
 import './db.js'; // MongoDB connection
 
@@ -25,6 +26,7 @@ app.use('/api/predict', predictRoutes);
 app.use('/api/trigger', triggerRoutes);
 app.use('/api/merchant',merchantPredictionRoutes);
 app.use('/api/tickets',ticketRoutes);
+app.use('/api/nlp', nlpRoutes);
 
 // ====== SWAGGER CONFIG ======
 const swaggerOptions = {

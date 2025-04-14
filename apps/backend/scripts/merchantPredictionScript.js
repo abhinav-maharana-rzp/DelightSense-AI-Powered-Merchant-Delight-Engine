@@ -7,11 +7,11 @@ export const processMerchantData = async () => {
 
         // List of possible descriptions for ticket creation
         const descriptions = [
-            "Low delight score detected",
-            "High API failure rate observed",
-            "Frequent transaction failures reported",
-            "Customer dissatisfaction reported",
-            "Settlement delays exceeding threshold"
+            "The delight score for this merchant has been detected to be significantly low, indicating potential dissatisfaction among customers. This issue requires immediate attention to identify and address the root causes to improve customer experience and satisfaction levels.",
+            "A high rate of API failures has been observed for this merchant, which could lead to disruptions in service and negatively impact the overall user experience. It is crucial to investigate the underlying technical issues and implement solutions to ensure system reliability.",
+            "There have been frequent transaction failures reported for this merchant, which may result in customer frustration and loss of trust. A detailed analysis of the transaction processing system is necessary to identify bottlenecks and improve transaction success rates.",
+            "Customer dissatisfaction has been reported for this merchant, which could be due to various factors such as delayed responses, unresolved issues, or poor service quality. Immediate action is required to address customer concerns and enhance the overall service experience.",
+            "Settlement delays for this merchant have been consistently exceeding the acceptable threshold, causing potential financial and operational challenges. A thorough review of the settlement process is needed to streamline operations and ensure timely settlements."
         ];
 
         // Randomly select a description

@@ -87,6 +87,21 @@
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 }
 
+.sentiment-card {
+    background-color: #dcd2f5;
+    border-radius: 0.5rem;
+    padding: 1rem;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.sentiment-card h2{
+    font-size: 1.25rem;
+    font-weight: bold;
+    margin-bottom: 1rem;
+}
+
+
+
 .card h2, .card h3 {
     font-size: 1.25rem;
     font-weight: bold;
@@ -221,4 +236,28 @@
 
 .tickets-table tr:hover {
     background-color: #f9f9f9;
+}
+
+
+
+/* apps/frontend/src/css/Dashboard/homepage.css */
+.summarize-button {
+    padding: 10px 20px;
+    background-color: #5E35B1; /* Primary color */
+    color: #FFFFFF;
+    border: none;
+    border-radius: 8px;
+    font-size: 1rem;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.summarize-button:hover {
+    background-color: #4a2a8a; /* Darker shade of primary color */
+}
+
+.highlighted-row {
+    background-color: #f3e8fd; /* Light purple background */
+    font-weight: bold; /* Make the text bold */
 }

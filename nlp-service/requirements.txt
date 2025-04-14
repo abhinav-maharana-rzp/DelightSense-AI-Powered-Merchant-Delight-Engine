@@ -1,0 +1,10 @@
+flask
+openai
+transformers
+torch
+flask-cors
+python-dotenv
+openai
+python-dotenv
+pydub
+whisper
