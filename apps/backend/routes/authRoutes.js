@@ -49,6 +49,36 @@ router.post('/login', login);
 
 /**
  * @swagger
+ * /api/auth/test-token:
+ *   post:
+ *     summary: Generate a mock JWT token for testing
+ *     tags: [Auth]
+ *     responses:
+ *       200:
+ *         description: Successfully generated test token
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 token:
+ *                   type: string
+ *                   description: JWT token
+ *                   example: eyJhbGciOiJIUzI1NiIsInR5cCI6...
+ */
+router.post('/test-token', (req, res) => {
+    // You can allow passing mock user via body or hardcode one
+    const user = {
+      _id: '1234567890abcdef',
+      username: 'testuser',
+    };
+  
+    const token = generateToken(user);
+    res.json({ token });
+});
+
+/**
+ * @swagger
  * /api/auth/register:
  *   post:
  *     summary: Register a new user
