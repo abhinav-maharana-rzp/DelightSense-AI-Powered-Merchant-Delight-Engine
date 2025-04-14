@@ -55,7 +55,7 @@ export default function RegisterPage() {
                     <p className="text-lg text-gray-600 mb-6">If you already have an account, please log in.</p>
                     <Button
                         variant="secondary"
-                        className="px-6 py-3 text-lg text-white bg-blue-600 rounded-lg hover:bg-blue-700"
+                        className="px-6 py-3 text-lg text-white bg-purple-600 rounded-lg hover:bg-purple-600"
                         onClick={handleLoginRedirect}
                     >
                         Login

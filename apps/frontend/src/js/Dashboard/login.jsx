@@ -1,9 +1,6 @@
-import React, {useState} from "react";
-import { Button } from "../../component/ui/button.jsx";
-import { Input } from "../../component/ui/input.jsx";
-import { Eye, EyeOff } from "lucide-react";
+import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import "../../css/Dashboard/dashboard.css"; // Import the CSS file
+import { Eye, EyeOff } from "lucide-react";
 
 export default function LoginPage() {
     const navigate = useNavigate();
@@ -18,7 +15,7 @@ export default function LoginPage() {
 
     const handleLogin = async (e) => {
         e.preventDefault();
-        setError(""); // Clear any previous errors
+        setError("");
 
         try {
             const response = await fetch("http://localhost:3001/api/auth/login", {
@@ -33,7 +30,7 @@ export default function LoginPage() {
             if (response.ok) {
                 const data = await response.json();
                 console.log("Login successful:", data);
-                navigate("/", { state: { merchantId: username } }); // Redirect to home page
+                navigate("/", { state: { merchantId: username } });
             } else {
                 const errorData = await response.json();
                 setError(errorData.message || "Login failed. Please try again.");
@@ -46,57 +43,70 @@ export default function LoginPage() {
     };
 
     return (
-        <div className="login-page-container">
-            <div className="login-card">
-                <div className="login-form-container">
-                    <h2 className="login-title">Login</h2>
-                    <form className="login-form">
-                        <Input placeholder="MerchantId"
-                               type="string"
-                               className="input-field"
-                               value = {username}
-                               onChange ={(e) => setUsername(e.target.value)}/>
-                        <div className="password-container">
-                            <Input
-                                placeholder="Password"
-                                type={showPassword ? "text" : "password"} // Toggle input type
-                                className="input-field"
-                                value={password}
-                                onChange={(e) => setPassword(e.target.value)}
+        <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 to-purple-100 px-4">
+            <div className="w-full max-w-4xl bg-white rounded-xl shadow-2xl overflow-hidden grid grid-cols-1 md:grid-cols-2">
+                
+                {/* Login Section */}
+                <div className="p-8 md:p-12">
+                    <h2 className="text-3xl font-bold text-blue-800 mb-6">Merchant Login</h2>
+                    <form className="space-y-5" onSubmit={handleLogin}>
+                        <div>
+                            <label className="block text-gray-700 mb-1">Merchant ID</label>
+                            <input
+                                type="text"
+                                placeholder="Enter your merchant ID"
+                                className="w-full border border-gray-300 rounded-md px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400"
+                                value={username}
+                                onChange={(e) => setUsername(e.target.value)}
                             />
-                            {showPassword ? (
-                                <EyeOff
-                                    className="password-icon"
-                                    onClick={() => setShowPassword(false)} // Hide password
-                                />
-                            ) : (
-                                <Eye
-                                    className="password-icon"
-                                    onClick={() => setShowPassword(true)} // Show password
-                                />
-                            )}
                         </div>
-                        <Button className="login-button" onClick={handleLogin}>
+
+                        <div>
+                            <label className="block text-gray-700 mb-1">Password</label>
+                            <div className="relative">
+                                <input
+                                    type={showPassword ? "text" : "password"}
+                                    placeholder="Enter your password"
+                                    className="w-full border border-gray-300 rounded-md px-4 py-2 pr-10 focus:outline-none focus:ring-2 focus:ring-blue-400"
+                                    value={password}
+                                    onChange={(e) => setPassword(e.target.value)}
+                                />
+                                <div
+                                    className="absolute inset-y-0 right-3 flex items-center text-gray-500 cursor-pointer"
+                                    onClick={() => setShowPassword(!showPassword)}
+                                >
+                                    {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
+                                </div>
+                            </div>
+                        </div>
+
+                        {error && (
+                            <div className="text-red-600 text-sm bg-red-100 rounded-md px-3 py-2">
+                                {error}
+                            </div>
+                        )}
+
+                        <button
+                            type="submit"
+                            className="w-full bg-blue-600 text-white py-2 rounded-md hover:bg-blue-700 transition-all"
+                        >
                             Login
-                        </Button>
+                        </button>
                     </form>
-                    {error && <div className="error-message">{error}</div>}
                 </div>
 
-                <div className="register-container">
-                    <h2 className="register-title">New to Merchant Delight Dashboard</h2>
-                    <p className="register-description">Register yourself first before login</p>
-                    <Button
-                        variant="secondary"
-                        className="register-button"
+                {/* Register CTA Section */}
+                <div className="bg-blue-50 p-8 md:p-12 flex flex-col justify-center items-start">
+                    <h2 className="text-2xl font-semibold text-blue-900 mb-2">New to Merchant Delight?</h2>
+                    <p className="text-gray-700 mb-6">Register yourself before logging in and get started with tracking your merchant tickets.</p>
+                    <button
                         onClick={handleRegisterRedirect}
+                        className="bg-purple-600 text-white px-6 py-2 rounded-md hover:bg-purple-700 transition-all"
                     >
                         Register New Merchant
-                    </Button>
+                    </button>
                 </div>
-
             </div>
-
         </div>
     );
 }
