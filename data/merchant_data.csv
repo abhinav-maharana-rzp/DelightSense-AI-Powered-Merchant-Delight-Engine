@@ -1,0 +1,5 @@
+merchant_id,avg_txn_value,failed_txns_last_7d,support_tickets_last_30d,csat_score,settlement_delay_avg,api_failure_rate,active_days_last_month
+MID_00000,4692.68,4,2,3.4,1.99,0.218,16
+MID_00001,30101.21,3,4,4.4,2.21,0.185,18
+MID_00002,13167.46,3,3,4.3,2.54,0.056,13
+MID_00067,16204.84,0,2,4.5,2.54,0.229,29

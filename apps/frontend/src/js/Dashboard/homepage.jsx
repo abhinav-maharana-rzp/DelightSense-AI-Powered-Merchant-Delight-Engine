@@ -1,84 +1,65 @@
-import React, {useState} from "react";
+import React, { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import "../../css/Dashboard/dashboard.css";
 import { FaUserCircle } from "react-icons/fa";
 import "../../css/Dashboard/homepage.css";
-import {useLocation, useNavigate} from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
+import axios from "axios";
 
 const Dashboard = () => {
-
     const [showDropdown, setShowDropdown] = useState(false);
+    const [predictionData, setPredictionData] = useState(null);
+    const [merchantData, setMerchantData] = useState(null);
+    const [loading, setLoading] = useState(true);
+
     const location = useLocation();
     const merchantId = location.state?.merchantId || "Merchant";
-    const navigate = useNavigate()
+    const navigate = useNavigate();
 
-    //Handle logout
+    // Handle logout
     const handleLogout = () => {
         console.log("Logout clicked");
         navigate("/login");
     };
 
-    // Default data
+    // Fetch data from APIs
+    useEffect(() => {
+        const fetchData = async () => {
+            try {
+                const [predictionResponse, merchantResponse] = await Promise.all([
+                    axios.get(`http://localhost:3001/api/predict/${merchantId}`), // Predict API
+                    axios.get(`http://localhost:3001/api/merchant/get/${merchantId}`) // Merchant API
+                ]);
 
-    const teamMembers = [
-        { name: "Vera Kartika", location: "Biribasne, Australia" },
-        { name: "Sonny Kim", location: "Johor Bian, Malaysia" },
-        { name: "Priyanka Chopra", location: "Jamalecipsei, India" },
-    ];
-
-    const payments = [
-        { label: "Contractor Payment", amount: 1260, completed: false },
-        { label: "Contractor Payment", amount: 320, completed: false },
-        { label: "Your Balance", amount: 1420, completed: false },
-    ];
-
-    const timeOff = [
-        { type: "Sick leave", used: 7, total: 11 },
-        { type: "Vacation leave", used: 5, total: 11 },
-        { type: "No news leave", used: 5, total: 11 },
-    ];
-
-    // Animation variants
-    const container = {
-        hidden: { opacity: 0 },
-        visible: {
-            opacity: 1,
-            transition: {
-                when: "beforeChildren",
-                staggerChildren: 0.15,
+                setPredictionData(predictionResponse.data);
+                setMerchantData(merchantResponse.data);
+            } catch (error) {
+                console.error("Error fetching data:", error);
+            } finally {
+                setLoading(false);
             }
+        };
+
+        fetchData();
+    }, [merchantId]);
+
+    // Add this function to your component
+    const getEmojiForDelightScore = (score) => {
+        if (score < 0.4) {
+            return "😡"; // Super angry emoji
+        } else if (score >= 0.4 && score < 0.8) {
+            return "☹️"; // Frowning emoji
+        } else if (score >= 0.8 && score <= 1) {
+            return "😊"; // Happy emoji
         }
+        return ""; // Default case
     };
 
-    const cardVariants = {
-        hidden: { opacity: 0, x: -30 },
-        visible: {
-            opacity: 1,
-            x: 0,
-            transition: {
-                type: "spring",
-                stiffness: 100,
-                damping: 15
-            }
-        }
-    };
-
-    const cardVariantsRight = {
-        hidden: { opacity: 0, x: 30 },
-        visible: {
-            opacity: 1,
-            x: 0,
-            transition: {
-                type: "spring",
-                stiffness: 100,
-                damping: 15
-            }
-        }
-    };
+    if (loading) {
+        return <div>Loading...</div>;
+    }
 
     return (
-
-        // Header
         <div>
             {/* Header Section */}
             <div className="dashboard-header">
@@ -96,151 +77,66 @@ const Dashboard = () => {
                 </div>
             </div>
 
-
-        <motion.div
-            className="dashboard"
-            variants={container}
-            initial="hidden"
-            animate="visible"
-        >
-            {/* UI Designer Team Card - Left animation */}
             <motion.div
-                className="card team-card"
-                variants={cardVariants}
+                className="dashboard"
+                initial="hidden"
+                animate="visible"
             >
-                <h2>UI Designer Team</h2>
-                {teamMembers.map((member, index) => (
-                    <div key={index} className="team-member">
-                        <strong>{member.name}</strong>
-                        <div>{member.location}</div>
+                {/* Prediction Data Card */}
+                <motion.div
+                    className="card"
+                    initial={{ opacity: 0, x: -30 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    transition={{ type: "spring", stiffness: 100, damping: 15 }}
+                >
+
+                    <h2>Prediction Data</h2>
+                    <div className="prediction-data-container">
+                        <div className="prediction-emoji">
+                            {getEmojiForDelightScore(predictionData?.delight_score)}
+                        </div>
+                        <p>Delight Score: {predictionData?.delight_score}</p>
+
                     </div>
-                ))}
-                <div className="team-meta">
-                    <div>
-                        <strong>Manage</strong>
-                    </div>
-                    <div className="meta-row">
-                        <div>
-                            <strong>Remote</strong>
-                            <div>Full-time</div>
-                        </div>
-                        <div>
-                            <strong>Onalte</strong>
-                            <div>Fireblanco</div>
-                        </div>
-                        <div>
-                            <strong>Hybrid</strong>
-                            <div>On training</div>
-                        </div>
-                    </div>
-                </div>
-            </motion.div>
 
-            {/* Payment Status Card - Right animation */}
-            <motion.div
-                className="card payment-card"
-                variants={cardVariantsRight}
-            >
-                <h2>Payment Status</h2>
-                <ul>
-                    {payments.map((payment, index) => (
-                        <li key={index}>
-                            <input type="checkbox" checked={payment.completed} readOnly />
-                            <span>{payment.label} ${payment.amount.toLocaleString()}</span>
-                        </li>
-                    ))}
-                </ul>
-            </motion.div>
+                </motion.div>
 
-            {/* Entry Aula Ramadhan Card - Left animation */}
-            <motion.div
-                className="card entry-card"
-                variants={cardVariants}
-            >
-                <h3>Entry Aula Ramadhan</h3>
-                <div className="entry-title">IOS Developer</div>
-                <div className="entry-service">Serviceists</div>
-                <div className="entry-section">
-                    <strong>Medical Insurance</strong>
-                    <div>Medical Insurance to cover your healthy.</div>
-                    <div className="entry-price">$140.00 / 2 years</div>
-                </div>
-                <div className="entry-section">
-                    <strong>Employee's</strong>
-                    <div>360</div>
-                </div>
-                <div className="entry-link">See details</div>
-                <div className="entry-footer">
-                    <div>Total Employees</div>
-                    <div>Total</div>
-                </div>
-            </motion.div>
-
-            {/* Time Off Card - Right animation */}
-            <motion.div
-                className="card timeoff-card"
-                variants={cardVariantsRight}
-            >
-                <h2>Time Off</h2>
-                {timeOff.map((item, index) => (
-                    <div key={index} className="timeoff-item">
-                        <div className="timeoff-type">
-                            <strong>{item.type}</strong>
+                {/* Merchant Data Card */}
+                <motion.div
+                    className="card"
+                    initial={{ opacity: 0, x: 30 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    transition={{ type: "spring", stiffness: 100, damping: 15 }}
+                >
+                    <h2>Merchant Data</h2>
+                    <div className="merchant-data-container">
+                        <div className="merchant-data-row">
+                            <strong>Merchant ID:</strong> <span>{merchantData?.merchant_id}</span>
                         </div>
-                        <div className="timeoff-stats">
-                            {item.used} / {item.total} Used
+                        <div className="merchant-data-row">
+                            <strong>Average Transaction Value:</strong> <span>{merchantData?.avg_txn_value}</span>
+                        </div>
+                        <div className="merchant-data-row">
+                            <strong>Failed Transactions (Last 7 Days):</strong> <span>{merchantData?.failed_txns_last_7d}</span>
+                        </div>
+                        <div className="merchant-data-row">
+                            <strong>Support Tickets (Last 30 Days):</strong> <span>{merchantData?.support_tickets_last_30d}</span>
+                        </div>
+                        <div className="merchant-data-row">
+                            <strong>CSAT Score:</strong> <span>{merchantData?.csat_score}</span>
+                        </div>
+                        <div className="merchant-data-row">
+                            <strong>Settlement Delay (Avg):</strong> <span>{merchantData?.settlement_delay_avg}</span>
+                        </div>
+                        <div className="merchant-data-row">
+                            <strong>API Failure Rate:</strong> <span>{merchantData?.api_failure_rate}</span>
+                        </div>
+                        <div className="merchant-data-row">
+                            <strong>Active Days (Last Month):</strong> <span>{merchantData?.active_days_last_month}</span>
                         </div>
                     </div>
-                ))}
+                </motion.div>
             </motion.div>
-
-            {/* Session Insurance Card - Left animation */}
-            <motion.div
-                className="card insurance-card"
-                variants={cardVariants}
-            >
-                <h2>Session Insurance</h2>
-                <div>Pension insurance to cover your pension time.</div>
-                <div className="insurance-price">$2,680.00 / 4 years</div>
-            </motion.div>
-
-            {/* Payroll Summary Card - Right animation */}
-            <motion.div
-                className="card payroll-card"
-                variants={cardVariantsRight}
-            >
-                <h2>Payroll Summary</h2>
-                <div className="payroll-download">Download</div>
-                <div className="payroll-amount">$18,000</div>
-                <div className="payroll-date">November 28, 2024</div>
-            </motion.div>
-
-            {/* Amanda Rocha Card - Left animation */}
-            <motion.div
-                className="card person-card"
-                variants={cardVariants}
-            >
-                <h3>Amanda Rocha</h3>
-                <div className="person-title">Assistant Manager</div>
-                <div className="person-details">
-                    <div>
-                        <strong>3 Months</strong>
-                        <div>Onboarding</div>
-                    </div>
-                    <div>
-                        <strong>4 years</strong>
-                        <div>covered</div>
-                    </div>
-                    <div>
-                        <strong>$2,680.00</strong>
-                    </div>
-                </div>
-            </motion.div>
-        </motion.div>
-            <div className="card trigger-card">
-                <p>Not happy with the scores? Generate a Trigger and let our team know</p>
-                <button className="trigger-button">Trigger</button>
-            </div>
         </div>
     );
 };

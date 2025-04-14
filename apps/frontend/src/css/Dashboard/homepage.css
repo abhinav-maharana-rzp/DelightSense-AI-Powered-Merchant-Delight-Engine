@@ -152,3 +152,36 @@
 .trigger-button:hover {
     background-color: #4a2a8a; /* Darker shade of primary color */
 }
+
+.merchant-data-container {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.merchant-data-row {
+    display: flex;
+    color: #4a2a8a;
+    justify-content: space-between;
+}
+
+.prediction-data-container {
+    display: flex;
+    flex-direction: column;
+    margin-top:10%;
+    align-items: center; /* Center horizontally */
+    justify-content: center; /* Center vertically */
+    text-align: center;
+/* Ensure it takes full height of the card */
+}
+
+.prediction-emoji {
+    font-size: 4rem; /* Adjust size to make it 50% of the card */
+    margin-top: 10px;
+}
+
+.centered-h2 {
+    display: flex;
+    justify-content: center;
+    height: 100%; /* Optional: for full height centering */
+}

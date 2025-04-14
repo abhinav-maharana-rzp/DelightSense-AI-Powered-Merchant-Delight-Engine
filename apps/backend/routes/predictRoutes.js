@@ -1,5 +1,5 @@
 import express from 'express';
-import { predictDelight } from '../controllers/predictController.js';
+import {getPredictionByMerchantId, predictDelight} from '../controllers/predictController.js';
 import { verifyToken } from '../utils/jwt.js';
 
 const router = express.Router();
@@ -74,5 +74,7 @@ const router = express.Router();
  *         description: Internal server error
  */
 router.post('/', predictDelight);
+
+router.get('/:merchant_id', getPredictionByMerchantId);
 
 export default router;
