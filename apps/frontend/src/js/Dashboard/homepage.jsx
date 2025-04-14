@@ -55,13 +55,14 @@ const Dashboard = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const [predictionResponse, merchantResponse] = await Promise.all([
+        const [predictionResponse, merchantResponse, ticketsResponse] = await Promise.all([
           axios.get(`http://localhost:3001/api/predict/${merchantId}`),
           axios.get(`http://localhost:3001/api/merchant/get/${merchantId}`),
           axios.get(`http://localhost:3001/api/tickets/get/${merchantId}`)
         ]);
         setPredictionData(predictionResponse.data);
         setMerchantData(merchantResponse.data);
+        console.log("Tickets Response:", ticketsResponse.data.tickets);
         setTickets(ticketsResponse.data.tickets || []);
       } catch (err) {
         console.error("Error fetching data", err);
