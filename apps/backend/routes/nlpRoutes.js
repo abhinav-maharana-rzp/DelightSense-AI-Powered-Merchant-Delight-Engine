@@ -58,18 +58,4 @@ const upload = multer(); // In-memory file handler
 
 router.post('/:type', upload.single('audio'), handleNLPRequest);
 
-
-/**
- * @swagger
- * /api/nlp-feedback:
- *   get:
- *     summary: Get processed NLP feedback
- *     tags: [NLP]
- */
-router.get('/nlp-feedback', (req, res) => {
-    const data = fs.readFileSync('data/processed_feedback.json');
-    res.json(JSON.parse(data));
-  });
-  
-
 export default router;
