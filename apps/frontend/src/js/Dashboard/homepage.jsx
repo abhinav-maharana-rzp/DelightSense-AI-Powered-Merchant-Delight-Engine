@@ -8,6 +8,7 @@ import {
 } from "recharts";
 import "../../css/Dashboard/dashboard.css";
 import "../../css/Dashboard/homepage.css";
+import VoiceAssistant from "../../component/ui/VoiceAssistant";
 
 // Sidebar
 const Sidebar = ({ onLogout }) => (
@@ -300,6 +301,15 @@ const Dashboard = () => {
   </p>
 </motion.div>
 
+{/* Voice Assistant */}
+<motion.div
+  className="bg-white rounded-xl shadow-2xl border border-gray-100 p-6"
+  initial={{ opacity: 0, y: 30 }}
+  animate={{ opacity: 1, y: 0 }}
+  transition={{ type: "spring", stiffness: 100, damping: 15 }}
+>
+  <VoiceAssistant />
+</motion.div>
 
           {/* Charts */}
           <section>
