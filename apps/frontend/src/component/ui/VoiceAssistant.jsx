@@ -10,7 +10,19 @@ const VoiceAssistant = () => {
 
   const mediaRecorderRef = useRef(null);
   const audioChunksRef = useRef([]);
+  const ffmpegRef = useRef(null);
 
+  // Initialize ffmpeg.wasm
+  const loadFFmpeg = async () => {
+    if (!ffmpegRef.current) {
+      const { createFFmpeg, fetchFile } = await import('@ffmpeg/ffmpeg');
+      ffmpegRef.current = createFFmpeg({ log: true });
+      ffmpegRef.current.fetchFile = fetchFile;
+      await ffmpegRef.current.load();
+    }
+  };  
+
+  // Start recording audio
   const startRecording = async () => {
     try {
       const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
@@ -25,8 +37,8 @@ const VoiceAssistant = () => {
       };
 
       mediaRecorder.onstop = async () => {
-        const audioBlob = new Blob(audioChunksRef.current, { type: 'audio/wav' });
-        await sendAudio(audioBlob);
+        const audioBlob = new Blob(audioChunksRef.current, { type: 'audio/webm' });
+        await convertAudioToWav(audioBlob);
       };
 
       mediaRecorder.start();
@@ -37,6 +49,7 @@ const VoiceAssistant = () => {
     }
   };
 
+  // Stop recording
   const stopRecording = () => {
     if (mediaRecorderRef.current) {
       mediaRecorderRef.current.stop();
@@ -44,6 +57,26 @@ const VoiceAssistant = () => {
     }
   };
 
+  // Convert audio to .wav format using ffmpeg.wasm
+  const convertAudioToWav = async (audioBlob) => {
+    await loadFFmpeg();
+    const audioBuffer = await audioBlob.arrayBuffer();
+    const audioFileName = 'input.webm';
+
+    // Write audio file to ffmpeg's virtual file system
+    await ffmpegRef.current.FS('writeFile', audioFileName, new Uint8Array(audioBuffer));
+
+    // Convert to .wav format
+    await ffmpegRef.current.run('-i', audioFileName, 'output.wav');
+
+    // Read the converted .wav file from the virtual file system
+    const data = ffmpegRef.current.FS('readFile', 'output.wav');
+    const wavBlob = new Blob([data.buffer], { type: 'audio/wav' });
+
+    await sendAudio(wavBlob);
+  };
+
+  // Send audio to backend
   const sendAudio = async (audioBlob) => {
     const formData = new FormData();
     formData.append('audio', audioBlob, 'recording.wav');
@@ -54,8 +87,12 @@ const VoiceAssistant = () => {
         headers: { 'Content-Type': 'multipart/form-data' },
       });
 
-      setTranscript(res.data.transcript);
-      setResponse(res.data.response);
+      if (res.data.transcript) {
+        setTranscript(res.data.transcript);
+      }
+      if (res.data.response) {
+        setResponse(res.data.response);
+      }
     } catch (err) {
       console.error('Voice assistant error:', err);
       setResponse('❌ Error processing voice input.');
@@ -65,7 +102,7 @@ const VoiceAssistant = () => {
   };
 
   return (
-    <div className=" p-6 w-full mx-auto">
+    <div className="p-6 w-full mx-auto">
       <h2 className="text-2xl font-bold mb-4 text-gray-800 flex items-center gap-2">
         🎙️ Voice Assistant
       </h2>
