@@ -10,17 +10,16 @@ const VoiceAssistant = () => {
 
   const mediaRecorderRef = useRef(null);
   const audioChunksRef = useRef([]);
-  const ffmpegRef = useRef(null);
+  let ffmpegRef = null;
 
-  // Initialize ffmpeg.wasm
-  const loadFFmpeg = async () => {
-    if (!ffmpegRef.current) {
-      const { createFFmpeg, fetchFile } = await import('@ffmpeg/ffmpeg');
-      ffmpegRef.current = createFFmpeg({ log: true });
-      ffmpegRef.current.fetchFile = fetchFile;
-      await ffmpegRef.current.load();
-    }
-  };  
+const loadFFmpeg = async () => {
+  if (!ffmpegRef) {
+    const { createFFmpeg, fetchFile } = await import('@ffmpeg/ffmpeg');
+    ffmpegRef = createFFmpeg({ log: true });
+    await ffmpegRef.load();
+  }
+};
+
 
   // Start recording audio
   const startRecording = async () => {
